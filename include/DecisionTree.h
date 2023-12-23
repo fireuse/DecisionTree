@@ -1,0 +1,10 @@
+#ifndef DECISIONTREE_DECISIONTREE_H
+#define DECISIONTREE_DECISIONTREE_H
+
+
+class DecisionTree {
+
+};
+
+
+#endif //DECISIONTREE_DECISIONTREE_H
