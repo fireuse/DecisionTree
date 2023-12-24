@@ -18,6 +18,8 @@ public:
     const std::vector<int> &getLabels();
 
     std::unordered_map<int, float> frequencies();
+
+    double entropy();
 };
 
 

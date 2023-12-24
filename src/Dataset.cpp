@@ -1,3 +1,4 @@
+#include <cmath>
 #include "../include/Dataset.h"
 
 Dataset::Dataset(const std::vector<int> &labels, const std::vector<std::vector<double>> &data) : labels(labels),
@@ -9,7 +10,7 @@ std::tuple<Dataset, Dataset> Dataset::split(int axis, double value) {
     std::vector<int> labelsLeft;
     std::vector<int> labelsRight;
     unsigned long size = data.size();
-    for (int i = 0; i <= size; ++i) {
+    for (int i = 0; i < size; ++i) {
         if (data[i][axis] > value) {
             dataRight.push_back(data[i]);
             labelsRight.push_back(labels[i]);
@@ -41,4 +42,12 @@ std::unordered_map<int, float> Dataset::frequencies() {
         out[i] = (float) count / size;
     }
     return out;
+}
+
+double Dataset::entropy() {
+    double entropy = 0;
+    for(auto [label, frequency] : frequencies()){
+        entropy += frequency*log2(frequency);
+    }
+    return -entropy;
 }
