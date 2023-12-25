@@ -4,27 +4,29 @@
 #include <tuple>
 
 int TreeNode::predict(std::vector<double> &data) {
-
-    return 0;
+    if (data[axis] < compare){
+        return right->predict(data);
+    }
+    return left->predict(data);
 }
 
 void TreeNode::initialize(Dataset dataset, int maxDepth) {
     std::vector<Split> splits;
     auto &data = dataset.getData();
     auto size = data.size();
-    for (int i = 0; i <= size; ++i) {
-        for (int j = 0; j <= data[0].size(); ++j) {
+    for (int i = 0; i < size; ++i) {
+        for (int j = 0; j < data[0].size(); ++j) {
             splits.push_back(TreeNode::createSplit(dataset, data[i][j], j));
         }
     }
-    Split best = *std::min_element(splits.begin(), splits.end(),
+    Split best = *std::max_element(splits.begin(), splits.end(),
                                    [](const Split &x, const Split &y) { return x.goodness < y.goodness; });
     compare = best.compare;
     axis = best.axis;
     auto [dataLeft, dataRight] = best.dataset;
     if (depth < maxDepth) {
-        left = new TreeNode(depth + 1);
-        right = new TreeNode(depth + 1);
+        left = createNode(dataLeft, depth);
+        right = createNode(dataRight, depth);
     } else {
         left = new LeafNode();
         right = new LeafNode();
@@ -41,11 +43,39 @@ TreeNode::~TreeNode() {
 }
 
 Split TreeNode::createSplit(Dataset &dataset, double value, int ax) {
-    return {0, 0, 0, {dataset, dataset}};
+    auto [dataLeft, dataRight] = dataset.split(ax, value);
+    unsigned long parentSize = dataset.getData().size();
+    double goodness = dataset.entropy() - dataLeft.getData().size() / parentSize * dataLeft.entropy() -
+                      dataRight.getData().size() / parentSize * dataRight.entropy();
+    return {ax, value, goodness, {dataLeft, dataRight}};
+}
+
+bool TreeNode::checkPurity(Dataset &data) {
+    for (auto [label, freq]: data.frequencies()) {
+        if (freq > 0.95) {
+            return true;
+        }
+    }
+    return false;
+}
+
+Node *TreeNode::createNode(Dataset &data, int currentDepth) {
+    if (checkPurity(data)) {
+        return new LeafNode();
+    } else {
+        return new TreeNode(currentDepth + 1);
+    }
 }
 
 void LeafNode::initialize(Dataset dataset, int maxDepth) {
-
+    if (dataset.getData().empty()){
+        returnType = -1;
+        return;
+    }
+    auto frequencies = dataset.frequencies();
+    returnType = std::get<0>(*std::max_element(frequencies.begin(),frequencies.end(), [](const auto x1, const auto x2){
+        return std::get<1>(x1) < std::get<1>(x2);
+    }));
 }
 
 int LeafNode::predict(std::vector<double> &data) {

@@ -36,6 +36,10 @@ class TreeNode : Node {
     static Split
     createSplit(Dataset &data, double value, int ax);
 
+    static bool checkPurity(Dataset &data);
+
+    static Node *createNode(Dataset &data, int currentDepth);
+
 public:
     explicit TreeNode(int depth);
 

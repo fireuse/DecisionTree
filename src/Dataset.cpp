@@ -11,7 +11,7 @@ std::tuple<Dataset, Dataset> Dataset::split(int axis, double value) {
     std::vector<int> labelsRight;
     unsigned long size = data.size();
     for (int i = 0; i < size; ++i) {
-        if (data[i][axis] > value) {
+        if (data[i][axis] < value) {
             dataRight.push_back(data[i]);
             labelsRight.push_back(labels[i]);
         } else {

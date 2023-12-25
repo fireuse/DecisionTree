@@ -21,11 +21,11 @@ TEST_CASE("Dataset_Test") {
     REQUIRE(frequencies.at(1) == 0.5);
 
     //split test
-    auto [l, r] = d.split(0, 0.5);
+    auto [l, r] = d.split(0, 1);
     REQUIRE(r.getData().size() == 100);
     REQUIRE(l.getData().size() == 100);
-    REQUIRE(r.frequencies().at(1) == 1);
-    REQUIRE(l.frequencies().at(0) == 1);
+    REQUIRE(r.frequencies().at(0) == 1);
+    REQUIRE(l.frequencies().at(1) == 1);
 
     REQUIRE(d.entropy() == 1);
 }
