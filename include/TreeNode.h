@@ -23,10 +23,12 @@ public:
 
     virtual int predict(std::vector<double> &data) = 0;
 
+    virtual int getDepth() = 0;
+
     virtual ~Node() = default;
 };
 
-class TreeNode : Node {
+class TreeNode : public Node {
     Node *left;
     Node *right;
     int axis;
@@ -47,15 +49,22 @@ public:
 
     int predict(std::vector<double> &data) override;
 
+    int getDepth() override;
+
+public:
     ~TreeNode() override;
 };
 
 class LeafNode : public Node {
-    int returnType;
+    int returnType = 0;
+    int depth;
 public:
+    explicit LeafNode(int depth);
     void initialize(Dataset dataset, int maxDepth) override;
 
     int predict(std::vector<double> &data) override;
+
+    int getDepth() override;
 
     ~LeafNode() override = default;
 };

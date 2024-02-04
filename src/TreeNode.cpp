@@ -28,8 +28,8 @@ void TreeNode::initialize(Dataset dataset, int maxDepth) {
         left = createNode(dataLeft, depth);
         right = createNode(dataRight, depth);
     } else {
-        left = new LeafNode();
-        right = new LeafNode();
+        left = new LeafNode(depth);
+        right = new LeafNode(depth);
     }
     left->initialize(dataLeft, maxDepth);
     right->initialize(dataRight, maxDepth);
@@ -61,10 +61,14 @@ bool TreeNode::checkPurity(Dataset &data) {
 
 Node *TreeNode::createNode(Dataset &data, int currentDepth) {
     if (checkPurity(data)) {
-        return new LeafNode();
+        return new LeafNode(currentDepth);
     } else {
         return new TreeNode(currentDepth + 1);
     }
+}
+
+int TreeNode::getDepth() {
+    return std::max(left->getDepth(), right->getDepth());
 }
 
 void LeafNode::initialize(Dataset dataset, int maxDepth) {
@@ -81,6 +85,12 @@ void LeafNode::initialize(Dataset dataset, int maxDepth) {
 int LeafNode::predict(std::vector<double> &data) {
     return returnType;
 }
+
+int LeafNode::getDepth() {
+    return depth;
+}
+
+LeafNode::LeafNode(int depth) : depth(depth){}
 
 
 Split::Split(int axis, double compare, double goodness, std::tuple<Dataset, Dataset> dataset) : axis(axis),

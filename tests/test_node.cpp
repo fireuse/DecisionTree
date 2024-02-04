@@ -21,7 +21,7 @@ TEST_CASE("LEAF_NODE") {
     double percent = GENERATE(0, 0.2, 0.4);
     int len = 10000;
 
-    LeafNode l;
+    LeafNode l(0);
     l.initialize(makeData(len, percent), 100);
 
     std::vector<double> trueValue{1};
@@ -29,10 +29,12 @@ TEST_CASE("LEAF_NODE") {
 
     std::vector<double> falseValue{0};
     REQUIRE(l.predict(falseValue) == 0);
+
+    REQUIRE(l.getDepth() == 0);
 }
 
 TEST_CASE("TREE_NODE") {
-    Dataset d = makeData(1000, GENERATE(0.2,0.5,0.7));
+    Dataset d = makeData(1000, GENERATE(0.2, 0.5, 0.7));
     TreeNode t(0);
     t.initialize(d, 10);
 

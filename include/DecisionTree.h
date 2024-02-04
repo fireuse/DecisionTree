@@ -2,8 +2,17 @@
 #define DECISIONTREE_DECISIONTREE_H
 
 
-class DecisionTree {
+#include "TreeNode.h"
 
+class DecisionTree {
+    TreeNode *parent;
+    int maxDepth;
+public:
+    explicit DecisionTree(int maxDepth);
+
+    void initialize(Dataset &data);
+    int predict(std::vector<double> &data);
+    int getDepth();
 };
 
 
