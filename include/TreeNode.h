@@ -21,7 +21,7 @@ public:
     virtual void
     initialize(Dataset dataset, int maxDepth) = 0;
 
-    virtual int predict(std::vector<double> &data) = 0;
+    virtual int predict(const std::vector<double> &data) = 0;
 
     virtual int getDepth() = 0;
 
@@ -47,7 +47,7 @@ public:
 
     void initialize(Dataset dataset, int maxDepth) override;
 
-    int predict(std::vector<double> &data) override;
+    int predict(const std::vector<double> &data) override;
 
     int getDepth() override;
 
@@ -62,7 +62,7 @@ public:
     explicit LeafNode(int depth);
     void initialize(Dataset dataset, int maxDepth) override;
 
-    int predict(std::vector<double> &data) override;
+    int predict(const std::vector<double> &data) override;
 
     int getDepth() override;
 

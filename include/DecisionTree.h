@@ -11,7 +11,7 @@ public:
     explicit DecisionTree(int maxDepth);
 
     void initialize(Dataset &data);
-    int predict(std::vector<double> &data);
+    std::vector<int> predict(const std::vector<std::vector<double>> &data);
     int getDepth();
 };
 

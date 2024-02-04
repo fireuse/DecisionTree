@@ -3,7 +3,7 @@
 #include <utility>
 #include <tuple>
 
-int TreeNode::predict(std::vector<double> &data) {
+int TreeNode::predict(const std::vector<double> &data) {
     if (data[axis] < compare){
         return right->predict(data);
     }
@@ -52,7 +52,7 @@ Split TreeNode::createSplit(Dataset &dataset, double value, int ax) {
 
 bool TreeNode::checkPurity(Dataset &data) {
     for (auto [label, freq]: data.frequencies()) {
-        if (freq > 0.95) {
+        if (freq > 0.99) {
             return true;
         }
     }
@@ -82,7 +82,7 @@ void LeafNode::initialize(Dataset dataset, int maxDepth) {
     }));
 }
 
-int LeafNode::predict(std::vector<double> &data) {
+int LeafNode::predict(const std::vector<double> &data) {
     return returnType;
 }
 
