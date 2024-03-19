@@ -22,7 +22,7 @@ TEST_CASE("LEAF_NODE") {
     int len = 10000;
 
     LeafNode l(0);
-    l.initialize(makeData(len, percent), 100);
+    l.initialize(makeData(len, percent), 100, 0.9);
 
     std::vector<double> trueValue{1};
     REQUIRE(l.predict(trueValue) == 0);
@@ -36,7 +36,7 @@ TEST_CASE("LEAF_NODE") {
 TEST_CASE("TREE_NODE") {
     Dataset d = makeData(1000, GENERATE(0.2, 0.5, 0.7));
     TreeNode t(0);
-    t.initialize(d, 10);
+    t.initialize(d, 10, 0.9);
 
     std::vector<double> trueValue{1};
     REQUIRE(t.predict(trueValue) == 0);

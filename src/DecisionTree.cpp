@@ -5,10 +5,10 @@ int DecisionTree::getDepth() {
 }
 
 void DecisionTree::initialize(Dataset &data) {
-    parent->initialize(data, maxDepth);
+    parent->initialize(data, maxDepth, purity);
 }
 
-DecisionTree::DecisionTree(int maxDepth) : maxDepth(maxDepth) {
+DecisionTree::DecisionTree(int maxDepth, float purity) : maxDepth(maxDepth), purity(purity) {
     parent = new TreeNode(0);
 }
 

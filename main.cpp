@@ -13,7 +13,7 @@ bool inDistance(const std::vector<double> &x, double distance) {
 
 void runCheck(int features, double min, double max, double distance) {
     std::cout << "Run for " << features << std::endl;
-    DecisionTree tree(100);
+    DecisionTree tree(100, 0.9);
     DataGenerator gen(3, 1000, [distance](const std::vector<double> &x) { return inDistance(x, distance); }, {min, max});
     Dataset d = gen.generate();
     tree.initialize(d);

@@ -7,8 +7,9 @@
 class DecisionTree {
     TreeNode *parent;
     int maxDepth;
+    float purity;
 public:
-    explicit DecisionTree(int maxDepth);
+    explicit DecisionTree(int maxDepth, float purity);
 
     void initialize(Dataset &data);
     std::vector<int> predict(const std::vector<std::vector<double>> &data);

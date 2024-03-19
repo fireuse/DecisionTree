@@ -4,13 +4,14 @@
 #include <tuple>
 
 int TreeNode::predict(const std::vector<double> &data) {
-    if (data[axis] < compare){
+    if (data[axis] < compare) {
         return right->predict(data);
     }
     return left->predict(data);
 }
 
-void TreeNode::initialize(Dataset dataset, int maxDepth) {
+void TreeNode::initialize(Dataset dataset, int maxDepth, float purity) {
+    targetPurity = purity;
     std::vector<Split> splits;
     auto &data = dataset.getData();
     auto size = data.size();
@@ -31,8 +32,8 @@ void TreeNode::initialize(Dataset dataset, int maxDepth) {
         left = new LeafNode(depth);
         right = new LeafNode(depth);
     }
-    left->initialize(dataLeft, maxDepth);
-    right->initialize(dataRight, maxDepth);
+    left->initialize(dataLeft, maxDepth, purity);
+    right->initialize(dataRight, maxDepth, purity);
 }
 
 TreeNode::TreeNode(int depth) : depth(depth) {}
@@ -50,9 +51,9 @@ Split TreeNode::createSplit(Dataset &dataset, double value, int ax) {
     return {ax, value, goodness, {dataLeft, dataRight}};
 }
 
-bool TreeNode::checkPurity(Dataset &data) {
+bool TreeNode::checkPurity(Dataset &data) const {
     for (auto [label, freq]: data.frequencies()) {
-        if (freq > 0.99) {
+        if (freq > targetPurity) {
             return true;
         }
     }
@@ -71,15 +72,16 @@ int TreeNode::getDepth() {
     return std::max(left->getDepth(), right->getDepth());
 }
 
-void LeafNode::initialize(Dataset dataset, int maxDepth) {
-    if (dataset.getData().empty()){
+void LeafNode::initialize(Dataset dataset, int maxDepth, float targetPurity) {
+    if (dataset.getData().empty()) {
         returnType = -1;
         return;
     }
     auto frequencies = dataset.frequencies();
-    returnType = std::get<0>(*std::max_element(frequencies.begin(),frequencies.end(), [](const auto x1, const auto x2){
-        return std::get<1>(x1) < std::get<1>(x2);
-    }));
+    returnType = std::get<0>(
+            *std::max_element(frequencies.begin(), frequencies.end(), [](const auto x1, const auto x2) {
+                return std::get<1>(x1) < std::get<1>(x2);
+            }));
 }
 
 int LeafNode::predict(const std::vector<double> &data) {
@@ -90,7 +92,7 @@ int LeafNode::getDepth() {
     return depth;
 }
 
-LeafNode::LeafNode(int depth) : depth(depth){}
+LeafNode::LeafNode(int depth) : depth(depth) {}
 
 
 Split::Split(int axis, double compare, double goodness, std::tuple<Dataset, Dataset> dataset) : axis(axis),

@@ -19,7 +19,7 @@ struct Split {
 class Node {
 public:
     virtual void
-    initialize(Dataset dataset, int maxDepth) = 0;
+    initialize(Dataset dataset, int maxDepth, float targetPurity) = 0;
 
     virtual int predict(const std::vector<double> &data) = 0;
 
@@ -34,18 +34,19 @@ class TreeNode : public Node {
     int axis;
     double compare;
     int depth;
+    float targetPurity;
 
     static Split
     createSplit(Dataset &data, double value, int ax);
 
-    static bool checkPurity(Dataset &data);
+    bool checkPurity(Dataset &data) const;
 
-    static Node *createNode(Dataset &data, int currentDepth);
+    Node *createNode(Dataset &data, int currentDepth);
 
 public:
     explicit TreeNode(int depth);
 
-    void initialize(Dataset dataset, int maxDepth) override;
+    void initialize(Dataset dataset, int maxDepth, float targetPurity) override;
 
     int predict(const std::vector<double> &data) override;
 
@@ -60,7 +61,7 @@ class LeafNode : public Node {
     int depth;
 public:
     explicit LeafNode(int depth);
-    void initialize(Dataset dataset, int maxDepth) override;
+    void initialize(Dataset dataset, int maxDepth, float targetPurity) override;
 
     int predict(const std::vector<double> &data) override;
 
