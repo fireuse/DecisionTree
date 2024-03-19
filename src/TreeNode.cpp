@@ -46,8 +46,8 @@ TreeNode::~TreeNode() {
 Split TreeNode::createSplit(Dataset &dataset, double value, int ax) {
     auto [dataLeft, dataRight] = dataset.split(ax, value);
     unsigned long parentSize = dataset.getData().size();
-    double goodness = dataset.entropy() - dataLeft.getData().size() / parentSize * dataLeft.entropy() -
-                      dataRight.getData().size() / parentSize * dataRight.entropy();
+    double goodness = dataset.gainFunction() - dataLeft.getData().size() / parentSize * dataLeft.gainFunction() -
+                      dataRight.getData().size() / parentSize * dataRight.gainFunction();
     return {ax, value, goodness, {dataLeft, dataRight}};
 }
 

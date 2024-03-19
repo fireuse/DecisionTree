@@ -36,7 +36,7 @@ public:
         this->len = len;
     }
 
-    Dataset generate() {
+    Dataset generate(std::function<double(std::unordered_map<int, float>)> gain) {
         std::vector<std::vector<double>> data;
         std::vector<int> labels;
         for (int i = 0; i <= len; ++i) {
@@ -45,7 +45,7 @@ public:
         for (const auto &i: data) {
             labels.push_back(classifier(i));
         }
-        return {labels, data};
+        return {labels, data, gain};
     }
 };
 

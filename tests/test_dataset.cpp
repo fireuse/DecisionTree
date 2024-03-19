@@ -14,7 +14,7 @@ TEST_CASE("Dataset_Test") {
         labels.push_back(0);
     }
     //frequency test
-    Dataset d(labels, data);
+    Dataset d(labels, data, &gain::entropyGain);
     REQUIRE(d.getData().size() == 200);
     auto frequencies = d.frequencies();
     REQUIRE(frequencies.at(0) == 0.5);
@@ -27,5 +27,5 @@ TEST_CASE("Dataset_Test") {
     REQUIRE(r.frequencies().at(0) == 1);
     REQUIRE(l.frequencies().at(1) == 1);
 
-    REQUIRE(d.entropy() == 1);
+    REQUIRE(d.gainFunction() == 1);
 }

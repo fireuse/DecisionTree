@@ -14,7 +14,7 @@ Dataset makeData(int len, double percent) {
         labels.push_back(0);
     }
 
-    return {labels, data};
+    return {labels, data, gain::entropyGain};
 }
 
 TEST_CASE("LEAF_NODE") {
