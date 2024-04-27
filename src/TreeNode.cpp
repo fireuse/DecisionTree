@@ -10,7 +10,13 @@ int TreeNode::predict(const std::vector<double> &data) {
     return left->predict(data);
 }
 
-void TreeNode::initialize(Dataset dataset, int maxDepth, float purity) {
+void TreeNode::initialize(Dataset dataset, int maxDepth, float purity, bool reinit) {
+    if (reinit) {
+        auto [l, r] = dataset.split(axis, compare);
+        left->initialize(l, maxDepth, purity, reinit);
+        right->initialize(r, maxDepth, purity, reinit);
+        return;
+    }
     targetPurity = purity;
     std::vector<Split> splits;
     auto &data = dataset.getData();
@@ -32,8 +38,8 @@ void TreeNode::initialize(Dataset dataset, int maxDepth, float purity) {
         left = new LeafNode(depth);
         right = new LeafNode(depth);
     }
-    left->initialize(dataLeft, maxDepth, purity);
-    right->initialize(dataRight, maxDepth, purity);
+    left->initialize(dataLeft, maxDepth, purity, reinit);
+    right->initialize(dataRight, maxDepth, purity, reinit);
 }
 
 TreeNode::TreeNode(int depth) : depth(depth) {}
@@ -72,7 +78,46 @@ int TreeNode::getDepth() {
     return std::max(left->getDepth(), right->getDepth());
 }
 
-void LeafNode::initialize(Dataset dataset, int maxDepth, float targetPurity) {
+TreeNode::TreeNode(TreeNode *tr) {
+    axis = tr->axis;
+    depth = tr->depth;
+    compare = tr->compare;
+    targetPurity = tr->targetPurity;
+    if (dynamic_cast<LeafNode *>(tr->left)) {
+        left = new LeafNode(*(LeafNode *) tr->left);
+    } else {
+        left = new TreeNode((TreeNode *) tr->left);
+    }
+    if (dynamic_cast<LeafNode *>(tr->right)) {
+        right = new LeafNode(*(LeafNode *) tr->right);
+    } else {
+        right = new TreeNode((TreeNode *) tr->right);
+    }
+}
+
+std::vector<TreeNode *> TreeNode::getNodesAt(int n) {
+    std::vector<TreeNode *> results;
+    if (!dynamic_cast<LeafNode *>(left)) {
+        if (n == 0) {
+            auto lr = ((TreeNode *) left)->getNodesAt(n - 1);
+            results.insert(results.end(), lr.begin(), lr.end());
+        } else {
+            results.push_back((TreeNode *) left);
+        }
+    }
+    if (!dynamic_cast<LeafNode *>(right)) {
+        if (n == 0) {
+            auto rr = ((TreeNode *) right)->getNodesAt(n - 1);
+            results.insert(results.end(), rr.begin(), rr.end());
+        } else {
+            results.push_back((TreeNode *) right);
+        }
+    }
+    return results;
+}
+
+
+void LeafNode::initialize(Dataset dataset, int maxDepth, float targetPurity, bool reinit) {
     if (dataset.getData().empty()) {
         returnType = -1;
         return;

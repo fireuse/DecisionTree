@@ -23,6 +23,10 @@ public:
     std::unordered_map<int, float> frequencies();
 
     double gainFunction();
+
+    int countCorrect(std::vector<int>& labels);
+
+    std::tuple<Dataset, Dataset> divide(float percent);
 };
 
 namespace gain {

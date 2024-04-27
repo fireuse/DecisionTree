@@ -28,4 +28,9 @@ TEST_CASE("Dataset_Test") {
     REQUIRE(l.frequencies().at(1) == 1);
 
     REQUIRE(d.gainFunction() == 1);
+
+    //divide test
+    auto [f, s] = d.divide(0.5);
+    REQUIRE(f.getLabels().size() == s.getLabels().size());
+    REQUIRE(f.getLabels().size() == 0.5*d.getLabels().size());
 }

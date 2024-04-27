@@ -50,6 +50,25 @@ double Dataset::gainFunction() {
     return gain(frequencies());
 }
 
+int Dataset::countCorrect(std::vector<int> &test) {
+    int correctCount = 0;
+    for (int i = 0; i <= labels.size(); ++i) {
+        correctCount += test[i] == labels[i];
+    }
+    return correctCount;
+}
+
+std::tuple<Dataset, Dataset> Dataset::divide(float percent) {
+    int split = labels.size() * percent;
+    auto splittingPointLabels = labels.begin() + split;
+    auto splittingPointData = data.begin() + split;
+    std::vector<int> labelsLeft(labels.begin(), splittingPointLabels);
+    std::vector<int> labelsRight(splittingPointLabels, labels.end());
+    std::vector<std::vector<double>> dataLeft(data.begin(), splittingPointData);
+    std::vector<std::vector<double>> dataRight(splittingPointData, data.end());
+    return {Dataset(labelsLeft, dataLeft, gain), Dataset(labelsRight, dataRight, gain)};
+}
+
 double gain::giniCriterion(const std::unordered_map<int, float> &data) {
     double gini = 0;
     for(auto [label, frequency] : data){

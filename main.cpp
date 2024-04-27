@@ -22,15 +22,12 @@ void runCheck(int features, double min, double max, double distance,
     std::cout << "Tree Depth " << tree.getDepth() << std::endl;
     Dataset test = gen.generate(gain);
     std::vector<int> labels = tree.predict(test.getData());
-    int correctCount = 0;
-    for (int i = 0; i <= labels.size(); ++i) {
-        correctCount += labels[i] == test.getLabels()[i];
-    }
-    std::cout << "Accuracy " << (float) correctCount / (float) labels.size() << std::endl;
+    std::cout << "Accuracy " << tree.evalAccuracy(test) << std::endl;
+    std::cout << "Leafs " << tree.leafCount() << std::endl;
 }
 
 int main() {
-    runCheck(1, -1, 1, 0.5, gain::giniCriterion);
-    runCheck(2, -1, 1, 1, gain::giniCriterion);
+    runCheck(1, -1, 1, 0.5, gain::entropyGain);
+    runCheck(2, -1, 1, 1, gain::entropyGain);
     runCheck(3, -1, 1, 1, gain::entropyGain);
 }
